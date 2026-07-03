@@ -7,3 +7,8 @@ For the purposes of getting google to crawl the wiki, here's a link to the (not 
 If you're a human looking for the wiki, that's [here](https://github.com/MiSTer-devel/Wiki_MiSTer/wiki)
 
 To compile this application, read more about that [here](https://mister-devel.github.io/MkDocs_MiSTer/developer/mistercompile/#general-prerequisites-for-arm-cross-compiling)
+
+## Additional engineering docs
+
+- [MiSTer to Trenz TE0802 conversion plan](docs/te0802-port-plan.md)
+- [Adding MCP capability to plain Vivado 2025.2](docs/vivado-2025.2-mcp-setup.md)
