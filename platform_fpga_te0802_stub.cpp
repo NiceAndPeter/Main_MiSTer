@@ -24,6 +24,7 @@ static int te0802_stub_is_ready()
 const platform_fpga_ops *platform_fpga_te0802_stub_ops()
 {
 	static const platform_fpga_ops ops = {
+		.name = "te0802-stub",
 		.load_bitstream = te0802_stub_load_bitstream,
 		.set_bridge = te0802_stub_set_bridge,
 		.is_ready = te0802_stub_is_ready,

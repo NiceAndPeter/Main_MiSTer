@@ -489,15 +489,19 @@ int fpga_load_rbf(const char *name, const char *cfg, const char *xml)
 						sz = *(uint32_t*)(((uint8_t*)buf) + 12);
 						p = (void*)(((uint8_t*)buf) + 16);
 					}
-							platform_fpga_set_bridge(0);
-							ret = platform_fpga_load_bitstream(p, sz);
+								platform_fpga_set_bridge(0);
+								ret = platform_fpga_load_bitstream(p, sz);
 					if (ret)
 					{
+							if (ret == -ENOSYS)
+							{
+								printf("Backend '%s' does not implement bitstream load yet.\n", platform_fpga_backend_name());
+							}
 						printf("Error %d while loading %s\n", ret, path);
 					}
 					else
 					{
-								platform_fpga_set_bridge(1);
+							platform_fpga_set_bridge(1);
 					}
 				}
 				free(buf);
@@ -547,6 +551,8 @@ int fpga_io_init()
 	{
 		platform_fpga_set_ops(platform_fpga_socfpga_ops());
 	}
+
+	printf("INFO: Active FPGA backend: %s\n", platform_fpga_backend_name());
 
 	fpga_gpo_write(0);
 	return 0;

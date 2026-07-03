@@ -26,6 +26,7 @@ Phase A: discovery and feasibility.
 | A-007 | Add platform FPGA abstraction skeleton (non-breaking) | unassigned | done | `platform_fpga.h`, `platform_fpga.cpp`, `fpga_io.cpp` |
 | A-008 | Add TE0802 backend stub + runtime selector | unassigned | done | `platform_fpga_te0802_stub.*`, `fpga_io.cpp` |
 | A-009 | Extract SoCFPGA backend ops module | unassigned | done | `platform_fpga_socfpga_backend.*`, `fpga_io.cpp` |
+| A-010 | Add backend identity + clearer stub load error reporting | unassigned | done | `platform_fpga.*`, `fpga_io.cpp` |
 
 ## Immediate commands
 
@@ -34,6 +35,16 @@ Run from repository root:
 ```bash
 mkdir -p build/te0802_bootstrap
 vivado -mode batch -source scripts/vivado/te0802_bootstrap.tcl -tclargs build/te0802_bootstrap
+```
+
+Platform backend selector during runtime testing:
+
+```bash
+# default backend (current Cyclone V path)
+./bin/MiSTer
+
+# force TE0802 stub backend (returns ENOSYS for bitstream load by design)
+MISTER_PLATFORM=te0802 ./bin/MiSTer
 ```
 
 ## Exit criteria for Phase A

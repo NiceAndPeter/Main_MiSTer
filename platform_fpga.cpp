@@ -31,3 +31,9 @@ int platform_fpga_is_ready()
 	if (!g_platform_fpga_ops || !g_platform_fpga_ops->is_ready) return 0;
 	return g_platform_fpga_ops->is_ready();
 }
+
+const char *platform_fpga_backend_name()
+{
+	if (!g_platform_fpga_ops || !g_platform_fpga_ops->name) return "unset";
+	return g_platform_fpga_ops->name;
+}
