@@ -16,6 +16,7 @@
 #include "menu.h"
 #include "shmem.h"
 #include "offload.h"
+#include "platform_fpga.h"
 
 #include "fpga_base_addr_ac5.h"
 #include "fpga_manager.h"
@@ -392,6 +393,27 @@ static void do_bridge(uint32_t enable)
 	}
 }
 
+static int platform_socfpga_load_bitstream(const void *rbf_data, size_t rbf_size)
+{
+	return socfpga_load(rbf_data, rbf_size);
+}
+
+static void platform_socfpga_set_bridge(uint32_t enable)
+{
+	do_bridge(enable);
+}
+
+static int platform_socfpga_is_ready()
+{
+	return fpgamgr_test_fpga_ready();
+}
+
+static const platform_fpga_ops socfpga_platform_ops = {
+	.load_bitstream = platform_socfpga_load_bitstream,
+	.set_bridge = platform_socfpga_set_bridge,
+	.is_ready = platform_socfpga_is_ready,
+};
+
 static int make_env(const char *name, const char *cfg)
 {
 	void* buf = shmem_map(0x1FFFF000, 0x1000);
@@ -433,7 +455,7 @@ int fpga_load_rbf(const char *name, const char *cfg, const char *xml)
 	{
 		fpga_core_reset(1);
 		make_env(name, cfg);
-		do_bridge(0);
+		platform_fpga_set_bridge(0);
 		reboot(0);
 	}
 
@@ -486,15 +508,15 @@ int fpga_load_rbf(const char *name, const char *cfg, const char *xml)
 						sz = *(uint32_t*)(((uint8_t*)buf) + 12);
 						p = (void*)(((uint8_t*)buf) + 16);
 					}
-					do_bridge(0);
-					ret = socfpga_load(p, sz);
+							platform_fpga_set_bridge(0);
+							ret = platform_fpga_load_bitstream(p, sz);
 					if (ret)
 					{
 						printf("Error %d while loading %s\n", ret, path);
 					}
 					else
 					{
-						do_bridge(1);
+								platform_fpga_set_bridge(1);
 					}
 				}
 				free(buf);
@@ -533,6 +555,8 @@ int fpga_io_init()
 {
 	map_base = (uint32_t*)shmem_map(FPGA_REG_BASE, FPGA_REG_SIZE);
 	if (!map_base) return -1;
+
+	platform_fpga_set_ops(&socfpga_platform_ops);
 
 	fpga_gpo_write(0);
 	return 0;
@@ -659,7 +683,7 @@ int is_fpga_ready(int quick)
 		return (fpga_gpi_read() >= 0);
 	}
 
-	return fpgamgr_test_fpga_ready();
+	return platform_fpga_is_ready();
 }
 
 #define SSPI_STROBE  (1<<17)
