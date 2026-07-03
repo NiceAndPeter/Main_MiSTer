@@ -17,6 +17,7 @@
 #include "shmem.h"
 #include "offload.h"
 #include "platform_fpga.h"
+#include "platform_fpga_socfpga_backend.h"
 #include "platform_fpga_te0802_stub.h"
 
 #include "fpga_base_addr_ac5.h"
@@ -100,7 +101,7 @@ static int fpgamgr_get_mode(void)
 }
 
 /* Check whether FPGA is ready to be accessed */
-static int fpgamgr_test_fpga_ready(void)
+int fpgamgr_test_fpga_ready(void)
 {
 	/* Check for init done signal */
 	if (!is_fpgamgr_initdone_high())
@@ -346,7 +347,7 @@ static int fpgamgr_program_poll_usermode(void)
 * FPGA Manager to program the FPGA. This is the interface used by FPGA driver.
 * Return 0 for sucess, non-zero for error.
 */
-static int socfpga_load(const void *rbf_data, size_t rbf_size)
+int socfpga_load(const void *rbf_data, size_t rbf_size)
 {
 	unsigned long status;
 
@@ -377,7 +378,7 @@ static int socfpga_load(const void *rbf_data, size_t rbf_size)
 	return fpgamgr_program_poll_usermode();
 }
 
-static void do_bridge(uint32_t enable)
+void do_bridge(uint32_t enable)
 {
 	if (enable)
 	{
@@ -393,27 +394,6 @@ static void do_bridge(uint32_t enable)
 		writel(1, &nic301_regs->remap);
 	}
 }
-
-static int platform_socfpga_load_bitstream(const void *rbf_data, size_t rbf_size)
-{
-	return socfpga_load(rbf_data, rbf_size);
-}
-
-static void platform_socfpga_set_bridge(uint32_t enable)
-{
-	do_bridge(enable);
-}
-
-static int platform_socfpga_is_ready()
-{
-	return fpgamgr_test_fpga_ready();
-}
-
-static const platform_fpga_ops socfpga_platform_ops = {
-	.load_bitstream = platform_socfpga_load_bitstream,
-	.set_bridge = platform_socfpga_set_bridge,
-	.is_ready = platform_socfpga_is_ready,
-};
 
 static int make_env(const char *name, const char *cfg)
 {
@@ -565,7 +545,7 @@ int fpga_io_init()
 	}
 	else
 	{
-		platform_fpga_set_ops(&socfpga_platform_ops);
+		platform_fpga_set_ops(platform_fpga_socfpga_ops());
 	}
 
 	fpga_gpo_write(0);

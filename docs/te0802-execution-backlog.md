@@ -25,6 +25,7 @@ Phase A: discovery and feasibility.
 | A-006 | Select reference core for first bring-up | unassigned | in-progress | `docs/te0802-reference-core.md` |
 | A-007 | Add platform FPGA abstraction skeleton (non-breaking) | unassigned | done | `platform_fpga.h`, `platform_fpga.cpp`, `fpga_io.cpp` |
 | A-008 | Add TE0802 backend stub + runtime selector | unassigned | done | `platform_fpga_te0802_stub.*`, `fpga_io.cpp` |
+| A-009 | Extract SoCFPGA backend ops module | unassigned | done | `platform_fpga_socfpga_backend.*`, `fpga_io.cpp` |
 
 ## Immediate commands
 
