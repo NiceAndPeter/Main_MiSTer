@@ -53,6 +53,10 @@ Rationale:
 
 ## Open decisions
 
-- finalize latency threshold and measurement method.
-- define specific ROM/test set for reproducible validation.
-- assign owner for this track.
+- Latency threshold for first pass: no perceptible added lag versus baseline MiSTer setup in A/B testing, then convert to numeric target after measurement harness is in place.
+- Initial reproducible test set: one deterministic input-heavy title, one scrolling stress title, one audio continuity title.
+- Workstream owner tag: reference-core-bringup.
+
+## Decision status
+
+Reference core track is now considered selected and ready for execution (NES primary, SMS secondary).
