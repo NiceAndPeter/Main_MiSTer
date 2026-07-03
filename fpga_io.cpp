@@ -17,6 +17,7 @@
 #include "shmem.h"
 #include "offload.h"
 #include "platform_fpga.h"
+#include "platform_fpga_te0802_stub.h"
 
 #include "fpga_base_addr_ac5.h"
 #include "fpga_manager.h"
@@ -556,7 +557,16 @@ int fpga_io_init()
 	map_base = (uint32_t*)shmem_map(FPGA_REG_BASE, FPGA_REG_SIZE);
 	if (!map_base) return -1;
 
-	platform_fpga_set_ops(&socfpga_platform_ops);
+	const char *platform_override = getenv("MISTER_PLATFORM");
+	if (platform_override && !strcasecmp(platform_override, "te0802"))
+	{
+		printf("INFO: Using TE0802 stub platform backend.\n");
+		platform_fpga_set_ops(platform_fpga_te0802_stub_ops());
+	}
+	else
+	{
+		platform_fpga_set_ops(&socfpga_platform_ops);
+	}
 
 	fpga_gpo_write(0);
 	return 0;

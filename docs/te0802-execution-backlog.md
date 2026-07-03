@@ -24,6 +24,7 @@ Phase A: discovery and feasibility.
 | A-005 | Fill risk register with owners + target dates | unassigned | in-progress | `docs/te0802-risk-register.md` |
 | A-006 | Select reference core for first bring-up | unassigned | in-progress | `docs/te0802-reference-core.md` |
 | A-007 | Add platform FPGA abstraction skeleton (non-breaking) | unassigned | done | `platform_fpga.h`, `platform_fpga.cpp`, `fpga_io.cpp` |
+| A-008 | Add TE0802 backend stub + runtime selector | unassigned | done | `platform_fpga_te0802_stub.*`, `fpga_io.cpp` |
 
 ## Immediate commands
 
